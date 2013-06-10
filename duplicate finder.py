@@ -13,16 +13,36 @@ from shutil import move
 ###################################################################################
 # Functions
 
+# Function for Select Folder Button
 def get_root_folder():
     selected_folder.set(tkFileDialog.askdirectory())
-    
+
+# Function for Search! button- main algorithm     
 def search(folder_to_search, topdown=True):
-    for directory, list_of_subdirectories, list_of_files in os.walk(str(folder_to_search.get())):
-        print(directory)
-        print(list_of_subdirectories)
-        print(list_of_files)
 
-
+    # Set up variables
+    all_files = {} # A dictionary of all files in folder_to_search, including subfiles.Key is filename, value is path. 
+    duplicate_files = {}# A dictionary of all duplicate in folder_to_search, including subfiles. Key is filename, value is string of paths where the file exists.
+    
+    # Main loop- walk through directories in folder_to_search 
+    for dirpath, dirnames, filenames in os.walk(str(folder_to_search.get())):
+        for file in filenames:
+            if file in allfiles: #If its a duplicate,
+                if file in duplicate_files #And its already known to be a dupilcate
+                    duplicate_files[file].append(dirpath) # Add its path to duplicates list
+                else # And its not known to be a duplicate
+                    duplicate_files[file] = all_files[file]# Add the original (in all_files)
+                    duplicate_files[file].append(dirpath)# And add the current one
+                    
+            else # If its not a duplicate
+                all_files[file] = dirpath # If its not a duplicate, add to all files
+                
+                
+    #Print output (to be replaced with GUI)
+    print(all_files)
+    print(duplicate_files)
+    
+    
 ###################################################################################
 # Windows and Frame    
 
@@ -64,12 +84,13 @@ ttk.Entry(mainframe, textvariable=selected_folder).grid(column=1, row=1, columns
 ttk.Button(mainframe, text="Select Folder...", command=lambda: get_root_folder()).grid(column=3, row=1, sticky=W, padx="15", pady="15")
 
 
-# Ignore map
+# Ignore map (to be implemented)
+'''
 ttk.Label(mainframe, text="Files to ignore(comma delimited, no spaces): ").grid(column=0, row=4, padx="15", pady="15", sticky=E)
 ignore_map = StringVar()
 ignore_map.set(".DS_Store,")
 ttk.Entry(mainframe, textvariable=ignore_map).grid(column=1, row=4, columnspan=2, sticky=W+E)
-
+'''
 
 # Execute Button
 ttk.Button(mainframe, text="Search!", command= lambda: search(selected_folder)).grid(column=3, row=5, sticky=(W, E), padx="20", pady="30")
