@@ -16,9 +16,11 @@ from shutil import move
 def get_root_folder():
     selected_folder.set(tkFileDialog.askdirectory())
     
-def search(folder_to_search):
-    os.path.walk(folder_to_search)    
-    
+def search(folder_to_search, topdown=True):
+    for directory, list_of_subdirectories, list_of_files in os.walk(str(folder_to_search.get())):
+        print(directory)
+        print(list_of_subdirectories)
+        print(list_of_files)
 
 
 ###################################################################################
