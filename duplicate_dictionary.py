@@ -30,19 +30,7 @@ class DuplicateDictionary():
         return self.duplicate_files
     
     def create(self, folder_to_search, ignore_items, gui):
-        # Show Progrgress window
-        self.progress_window = Toplevel()
-        self.progress_window.title("Duplicate Finder")
-        self.progress_window.resizable(FALSE,FALSE)
-        
-        self.progress_frame = ttk.Frame(self.progress_window, padding="10 10 10 10")
-        self.progress_frame.grid(column=0, row=0, sticky=(W, N, E, S))
-        
-        ttk.Label(self.progress_frame, text="Searching for duplicate files.").grid(column=1, row=1, padx="15", pady="15", sticky=E)
-        
-        self.progress_bar = ttk.Progressbar(self.progress_frame, orient=HORIZONTAL, length=200, mode='indeterminate')
-        self.progress_bar.grid(column=1, row=2, columnspan=3)
-        self.progress_bar.start()
+        gui.show_progress_window()
         
         
         self.folder_to_search_str = folder_to_search.get() # Get the toplevel directory
@@ -85,7 +73,7 @@ class DuplicateDictionary():
         
                     
         #Destory progress window            
-        self.progress_window.destroy()
+        gui.destroy_progress_window()
         
         gui.ready()
         

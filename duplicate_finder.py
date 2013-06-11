@@ -31,7 +31,6 @@ class GUI():
         self.root.minsize(750,600)
         
         
-        
         # Root-level frame
         self.mainframe = ttk.Frame(self.root, padding="30 30 30 30")
         self.mainframe.grid(column=0, row=0, sticky=(W, N, E, S))
@@ -54,7 +53,7 @@ class GUI():
         
         
         # UI Elements
-        
+
         # Folder Duplicate
         ttk.Label(self.mainframe, text="Folder to search (including subfolders): ").grid(column=0, row=1, padx="15", pady="15", sticky=E)
         self.selected_folder = StringVar()
@@ -62,8 +61,7 @@ class GUI():
         ttk.Button(self.mainframe, text="Select Folder...", command=lambda: self.set_root_folder()).grid(column=3, row=1, sticky=W, padx="15", pady="15")
         
         
-        # Ignore map (to be implemented)
-        
+        # Ignore 
         ttk.Label(self.mainframe, text="Files to ignore (comma delimited, no spaces): ").grid(column=0, row=4, padx="15", pady="15", sticky=E)
         self.ignore_string = StringVar()
         self.ignore_string.set(".DS_Store,") #Set default
@@ -74,12 +72,8 @@ class GUI():
         ttk.Button(self.mainframe, text="Search!", command= lambda: duplicatedictionary.create(self.selected_folder,self.ignore_string, self)).grid(column=3, row=5, sticky=(W, E), padx="20", pady="30")
         
         
-        
-        
         self.horizontal_separator = ttk.Separator(self.mainframe, orient=HORIZONTAL)           
         self.horizontal_separator.grid(column=0, row=6, columnspan=4, pady="30", sticky=(W, E,)) 
-        
-        
         
         
         # File Listbox
@@ -87,23 +81,19 @@ class GUI():
         self.file_listbox_label.grid(column=0, row=7, padx="15", pady="5", sticky=(W, S))
         self.file_listbox = Listbox(self.mainframe)
         self.file_listbox.grid(column=0, row=8, sticky=(W, N, E, S), padx=15)
-        self.file_listbox.configure(bg='#ccc') # Starts out greyed out
-        
-        self.file_listbox.bind("<<ListboxSelect>>", lambda x: self.update_directory_listbox())
-        
+        self.file_listbox.configure(bg='#ccc') # Starts out greyed out     
         
         
         # Directory listbox
-        ttk.Label(self.mainframe, text="Locations Found (left click to open folder, right click to open file)").grid(column=1, row=7, padx="15", sticky=(W, S), pady="5")
+        ttk.Label(self.mainframe, text="Locations Found (left click to select, double click to open)").grid(column=1, row=7, padx="15", sticky=(W, S), pady="5")
         self.directory_listbox = Listbox(self.mainframe)
         self.directory_listbox.grid(column=1, row=8, columnspan=3, sticky=(W, N, E, S), padx=15)
         self.directory_listbox.configure(bg='#ccc') # Starts out greyed out
-        
-        self.directory_listbox.bind("<<ListboxSelect>>", lambda x: self.open_selected_path())
                     
         self.root.mainloop()
-        
-      # Function for Select Folder Button
+  
+
+     # Function for Select Folder Button
     def set_root_folder(self):
         self.selected_folder.set(tkFileDialog.askdirectory())
        
@@ -114,9 +104,8 @@ class GUI():
     def ready(self): # Activates everything
         # Display output
         #Change colors to show enabled
-        self.file_listbox.configure(bg='#fff')
-        self.directory_listbox.configure(bg='#fff')
-        
+        self.file_listbox.configure(bg='#ffffff')
+        self.directory_listbox.configure(bg='#ffffff')
         
         # Scrollbars
         
@@ -143,22 +132,25 @@ class GUI():
         # Call to populate directory listbox
         self.update_directory_listbox()
         
+        # Add bindings
+        self.file_listbox.bind("<<ListboxSelect>>", lambda x: self.update_directory_listbox())
+        self.directory_listbox.bind("<Double-1>", lambda x: self.open_selected_path())
     
-    # A function and binding to populate the directory listbox when file listbox is clicked
+    
+    # A function to populate the directory listbox when file listbox is clicked
     def update_directory_listbox(self):
         
         self.directory_listbox.delete(0, END) # Clear the box from previous selections
         
         self.current_file_listbox_key = self.file_listbox.get(self.file_listbox.curselection())                
         duplicate_files = duplicatedictionary.get_duplicate_files()
-        
-        
+             
         for directory in duplicate_files[self.current_file_listbox_key]:
             self.directory_listbox.insert(END, directory)
  
     
 
-    # A function to open folders when clicked on and its bindings
+    # A function to open folders when clicked
     def open_selected_path(self):
         
         path = self.directory_listbox.get(self.directory_listbox.curselection())
@@ -194,7 +186,25 @@ class GUI():
             
     directory_listbox.bind("<Button-2>", lambda x: open_selected_file(duplicate_files, file_listbox))
     '''
-
+    
+    def show_progress_window(self):
+        # Show Progrgress window
+        self.progress_window = Toplevel()
+        self.progress_window.title("Duplicate Finder")
+        self.progress_window.resizable(FALSE,FALSE)
+        
+        self.progress_frame = ttk.Frame(self.progress_window, padding="10 10 10 10")
+        self.progress_frame.grid(column=0, row=0, sticky=(W, N, E, S))
+        
+        ttk.Label(self.progress_frame, text="Searching for duplicate files.").grid(column=1, row=1, padx="15", pady="15", sticky=E)
+        
+        self.progress_bar = ttk.Progressbar(self.progress_frame, orient=HORIZONTAL, length=200, mode='indeterminate')
+        self.progress_bar.grid(column=1, row=2, columnspan=3)
+        self.progress_bar.start()
+        
+    def destroy_progress_window(self):
+        self.progress_window.destroy()
+        
 ###################################################################################
 # Create Instances
 duplicatedictionary = DuplicateDictionary() # Create and empty instance so we can call its methods
