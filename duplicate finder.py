@@ -198,7 +198,7 @@ mainframe.rowconfigure(8, weight=2)
 # UI Elements
 
 # Folder Duplicate
-ttk.Label(mainframe, text="Folder to search (subfolders included): ").grid(column=0, row=1, padx="15", pady="15", sticky=E)
+ttk.Label(mainframe, text="Folder to search (including subfolders): ").grid(column=0, row=1, padx="15", pady="15", sticky=E)
 selected_folder = StringVar()
 ttk.Entry(mainframe, textvariable=selected_folder).grid(column=1, row=1, columnspan=2, sticky=W+E)
 ttk.Button(mainframe, text="Select Folder...", command=lambda: get_root_folder()).grid(column=3, row=1, sticky=W, padx="15", pady="15")
