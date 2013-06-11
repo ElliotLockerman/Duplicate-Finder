@@ -119,7 +119,7 @@ def search(folder_to_search, ignore_items, topdown=True):
         
         directory_listbox.delete(0, END) # Clear the box from previous selections
         
-        current_file_listbox_key = file_listbox.get(ACTIVE)                
+        current_file_listbox_key = file_listbox.get(file_listbox.curselection())                
         
         for directory in duplicate_files[current_file_listbox_key]:
             directory_listbox.insert(END, directory)
@@ -131,7 +131,7 @@ def search(folder_to_search, ignore_items, topdown=True):
     # A function to open folders when clicked on and its bindings
     def open_selected_path(duplicate_files, file_listbox):
         
-        path = directory_listbox.get(ACTIVE)
+        path = directory_listbox.get(directory_listbox.curselection())
        
         if sys.platform == 'darwin':
                 subprocess.check_call(['open', '--', path])
@@ -147,7 +147,7 @@ def search(folder_to_search, ignore_items, topdown=True):
     # A function to open files when double clicked on and its bindings
     def open_selected_file(duplicate_files, file_listbox):
 
-        path = os.path.join(directory_listbox.get(ACTIVE), file_listbox.get(ACTIVE))
+        path = os.path.join(directory_listbox.get(directory_listbox.curselection()), file_listbox.get(file_listbox.curselection()) )
        
         if sys.platform == 'darwin':
                 subprocess.check_call(['open', '--', path])
