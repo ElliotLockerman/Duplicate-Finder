@@ -78,43 +78,26 @@ def search(folder_to_search, ignore_items, topdown=True):
                     
             else: # If its not a duplicate
                 all_files[file] = dirpath # If its not a duplicate, add to all files
-    
+
                 
     #Destory progress window            
     progress_window.destroy()
-       
     
-    root.minsize(750,600) #So the listboxes never get hidden
-    
-       
     # Display output
+       
+  
+    #Change colors to show enabled
+    file_listbox.configure(bg='#fff')
+    directory_listbox.configure(bg='#fff')
     
-    horizontal_separator = ttk.Separator(mainframe, orient=HORIZONTAL)           
-    horizontal_separator.grid(column=0, row=6, columnspan=4, pady="30", sticky=(W, E,)) 
     
+    # Scrollbars
     
-    # Listboxes!
-
-    # File Listbox
-    ttk.Label(mainframe, text="Duplicate Files (click to see locations)").grid(column=0, row=7, padx="15", sticky=(W, S))
-    file_listbox = Listbox(mainframe)
-    file_listbox.grid(column=0, row=8, sticky=(W, N, E, S), padx=15)
-    for file in duplicate_files.keys():
-        file_listbox.insert(END, file) # Populate listbox
-    file_listbox.selection_set(0)
-
     # File Listbox Y scrollbar
     file_listbox_scrollbar = ttk.Scrollbar(file_listbox, orient=VERTICAL, command=file_listbox.yview)
     file_listbox_scrollbar.pack(side = RIGHT, fill=Y)
     file_listbox.configure(yscrollcommand = file_listbox_scrollbar.set)
-    
-    
-    # Directory listbox
-    ttk.Label(mainframe, text="Locations Found (left click to open folder, right click to open file)").grid(column=1, row=7, padx="15", sticky=(W, S))
-    directory_listbox = Listbox(mainframe)
-    directory_listbox.grid(column=1, row=8, columnspan=3, sticky=(W, N, E, S), padx=15)
-    directory_listbox_scrollbar = ttk.Scrollbar(directory_listbox, orient=VERTICAL, command=directory_listbox.yview)
-    
+
     # Directory listbox Y scrollbar
     directory_listbox_scrollbar = ttk.Scrollbar(directory_listbox, orient=VERTICAL, command=directory_listbox.yview)
     directory_listbox_scrollbar.pack(side = RIGHT, fill=Y)
@@ -123,10 +106,15 @@ def search(folder_to_search, ignore_items, topdown=True):
     directory_listbox_scrollbar = ttk.Scrollbar(directory_listbox, orient=HORIZONTAL, command=directory_listbox.xview)
     directory_listbox_scrollbar.pack(side = BOTTOM, fill=X)
     directory_listbox.configure(xscrollcommand = directory_listbox_scrollbar.set)
+    
+    # Populate file listbox
+    file_listbox.delete(0, END) # Clear the box from previous searches
+    for file in duplicate_files.keys():
+        file_listbox.insert(END, file)
+    file_listbox.selection_set(0)
 
-
-
-    # A function and binding to update the directory listbox when file listbox is clicked
+    
+    # A function and binding to populate the directory listbox when file listbox is clicked
     def update_directory_listbox(duplicate_files, file_listbox):
         
         directory_listbox.delete(0, END) # Clear the box from previous selections
@@ -181,7 +169,7 @@ root.title("Duplicate Finder")
 root.columnconfigure(0, weight=1)
 root.rowconfigure(0, weight=1)
 root.geometry('+30+30')
-root.minsize(750,250)
+root.minsize(750,600)
 
 
 
@@ -210,15 +198,15 @@ mainframe.rowconfigure(8, weight=2)
 # UI Elements
 
 # Folder Duplicate
-ttk.Label(mainframe, text="Folder to search: ").grid(column=0, row=1, padx="15", pady="15", sticky=E)
+ttk.Label(mainframe, text="Folder to search (subfolders included): ").grid(column=0, row=1, padx="15", pady="15", sticky=E)
 selected_folder = StringVar()
-ttk.Entry(mainframe, textvariable=selected_folder).grid(column=1, row=1, columnspan=2, padx="15", pady="15", sticky=W+E)
+ttk.Entry(mainframe, textvariable=selected_folder).grid(column=1, row=1, columnspan=2, sticky=W+E)
 ttk.Button(mainframe, text="Select Folder...", command=lambda: get_root_folder()).grid(column=3, row=1, sticky=W, padx="15", pady="15")
 
 
 # Ignore map (to be implemented)
 
-ttk.Label(mainframe, text="Files to ignore(comma delimited, no spaces): ").grid(column=0, row=4, padx="15", pady="15", sticky=E)
+ttk.Label(mainframe, text="Files to ignore (comma delimited, no spaces): ").grid(column=0, row=4, padx="15", pady="15", sticky=E)
 ignore_string = StringVar()
 ignore_string.set(".DS_Store,") #Set default
 ttk.Entry(mainframe, textvariable=ignore_string).grid(column=1, row=4, columnspan=2, sticky=W+E)
@@ -226,6 +214,32 @@ ttk.Entry(mainframe, textvariable=ignore_string).grid(column=1, row=4, columnspa
 
 # Execute Button
 ttk.Button(mainframe, text="Search!", command= lambda: search(selected_folder,ignore_string)).grid(column=3, row=5, sticky=(W, E), padx="20", pady="30")
+
+
+
+
+horizontal_separator = ttk.Separator(mainframe, orient=HORIZONTAL)           
+horizontal_separator.grid(column=0, row=6, columnspan=4, pady="30", sticky=(W, E,)) 
+
+
+
+
+# File Listbox
+file_listbox_label = ttk.Label(mainframe, text="Duplicate Files (click to see locations)")
+file_listbox_label.grid(column=0, row=7, padx="15", pady="5", sticky=(W, S))
+file_listbox = Listbox(mainframe)
+file_listbox.grid(column=0, row=8, sticky=(W, N, E, S), padx=15)
+file_listbox.configure(bg='#ccc') # Starts out greyed out
+
+
+
+# Directory listbox
+ttk.Label(mainframe, text="Locations Found (left click to open folder, right click to open file)").grid(column=1, row=7, padx="15", sticky=(W, S), pady="5")
+directory_listbox = Listbox(mainframe)
+directory_listbox.grid(column=1, row=8, columnspan=3, sticky=(W, N, E, S), padx=15)
+directory_listbox.configure(bg='#ccc') # Starts out greyed out
+
+
 
 ###################################################################################
 
