@@ -110,7 +110,7 @@ def search(folder_to_search, ignore_items, topdown=True):
     
     
     # Directory listbox
-    ttk.Label(mainframe, text="Locations Found (click to open)").grid(column=1, row=7, padx="15", sticky=(W, S))
+    ttk.Label(mainframe, text="Locations Found (left click to open folder, right click to open file)").grid(column=1, row=7, padx="15", sticky=(W, S))
     directory_listbox = Listbox(mainframe)
     directory_listbox.grid(column=1, row=8, columnspan=3, sticky=(W, N, E, S), padx=15)
     directory_listbox_scrollbar = ttk.Scrollbar(directory_listbox, orient=VERTICAL, command=directory_listbox.yview)
@@ -153,6 +153,22 @@ def search(folder_to_search, ignore_items, topdown=True):
                 subprocess.check_call(['explorer', path])
     
     directory_listbox.bind("<<ListboxSelect>>", lambda x: open_selected_path(duplicate_files, file_listbox))
+    
+    
+    
+    # A function to open files when double clicked on and its bindings
+    def open_selected_file(duplicate_files, file_listbox):
+
+        path = os.path.join(directory_listbox.get(ACTIVE), file_listbox.get(ACTIVE))
+       
+        if sys.platform == 'darwin':
+                subprocess.check_call(['open', '--', path])
+        elif sys.platform == 'linux2':
+                subprocess.check_call(['gnome-open', '--', path])
+        elif sys.platform == 'windows':
+                subprocess.check_call(['explorer', path])
+    
+    directory_listbox.bind("<Button-2>", lambda x: open_selected_file(duplicate_files, file_listbox))
 
 ###################################################################################
 
