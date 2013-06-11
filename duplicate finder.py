@@ -22,6 +22,21 @@ def get_root_folder():
 # Function for Search! button- main algorithm     
 def search(folder_to_search, ignore_items, topdown=True):
     
+    # Show Progrgress window
+    progress_window = Toplevel()
+    progress_window.title("Duplicate Finder")
+    progress_window.resizable(FALSE,FALSE)
+
+    progress_frame = ttk.Frame(progress_window, padding="10 10 10 10")
+    progress_frame.grid(column=0, row=0, sticky=(W, N, E, S))
+
+    ttk.Label(progress_frame, text="Searching for duplicate files.").grid(column=1, row=1, padx="15", pady="15", sticky=E)
+    
+    progress_bar = ttk.Progressbar(progress_frame, orient=HORIZONTAL, length=200, mode='indeterminate')
+    progress_bar.grid(column=1, row=2, columnspan=3)
+    progress_bar.start()
+    
+    
     folder_to_search_str = folder_to_search.get() # Get the toplevel directory
     
     
@@ -39,19 +54,7 @@ def search(folder_to_search, ignore_items, topdown=True):
         return
      
     
-    # Show Progrgress window
-    progress_window = Toplevel()
-    progress_window.title("Duplicate Finder")
-    progress_window.resizable(FALSE,FALSE)
-
-    progress_frame = ttk.Frame(progress_window, padding="10 10 10 10")
-    progress_frame.grid(column=0, row=0, sticky=(W, N, E, S))
-
-    ttk.Label(progress_frame, text="Searching for duplicate files.").grid(column=1, row=1, padx="15", pady="15", sticky=E)
-    
-    progress_bar = ttk.Progressbar(progress_frame, orient=HORIZONTAL, length=200, mode='indeterminate')
-    progress_bar.grid(column=1, row=2, columnspan=3)
-    progress_bar.start()
+   
     
     
     
@@ -143,21 +146,29 @@ def search(folder_to_search, ignore_items, topdown=True):
     directory_listbox.bind("<<ListboxSelect>>", lambda x: open_selected_path(duplicate_files, file_listbox))
     
     
-    
+    '''
     # A function to open files when double clicked on and its bindings
     def open_selected_file(duplicate_files, file_listbox):
-
-        path = os.path.join(directory_listbox.get(directory_listbox.curselection()), file_listbox.get(file_listbox.curselection()) )
-       
+        
+        directory = directory_listbox.get(directory_listbox.curselection()[1])
+        print(directory)
+        file = file_listbox.get(file_listbox.curselection()[1])
+        print(file)
+        
+        
+        path = os.path.join(directory, file)
+        print(path)
+           
         if sys.platform == 'darwin':
                 subprocess.check_call(['open', '--', path])
         elif sys.platform == 'linux2':
                 subprocess.check_call(['gnome-open', '--', path])
         elif sys.platform == 'windows':
                 subprocess.check_call(['explorer', path])
-    
+            
     directory_listbox.bind("<Button-2>", lambda x: open_selected_file(duplicate_files, file_listbox))
-
+    '''
+    
 ###################################################################################
 
 # Windows and Frame    
