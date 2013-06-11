@@ -14,7 +14,6 @@ import subprocess
 import sys
 
 from duplicate_dictionary import *
-
 ###################################################################################
 # Classes
 
@@ -198,6 +197,6 @@ class GUI():
 
 ###################################################################################
 # Create Instances
-
 duplicatedictionary = DuplicateDictionary() # Create and empty instance so we can call its methods
 gui = GUI() # Aaaaand... start her up!
+
