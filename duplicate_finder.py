@@ -85,7 +85,7 @@ class GUI():
         
         
         # Directory listbox
-        ttk.Label(self.mainframe, text="Locations Found (left click to select, double click to open)").grid(column=1, row=7, padx="15", sticky=(W, S), pady="5")
+        ttk.Label(self.mainframe, text="Locations Found (left click to select, double click to open folder, right click to open file)").grid(column=1, row=7, padx="15", sticky=(W, S), pady="5")
         self.directory_listbox = Listbox(self.mainframe)
         self.directory_listbox.grid(column=1, row=8, columnspan=3, sticky=(W, N, E, S), padx=15)
         self.directory_listbox.configure(bg='#ccc') # Starts out greyed out
@@ -135,7 +135,8 @@ class GUI():
         # Add bindings
         self.file_listbox.bind("<<ListboxSelect>>", lambda x: self.update_directory_listbox())
         self.directory_listbox.bind("<Double-1>", lambda x: self.open_selected_path())
-    
+        self.directory_listbox.bind("<Button-2>", lambda x: self.open_selected_file())
+
     
     # A function to populate the directory listbox when file listbox is clicked
     def update_directory_listbox(self):
@@ -163,14 +164,13 @@ class GUI():
                 subprocess.check_call(['explorer', path])
     
     
-    
-    '''
+ 
     # A function to open files when double clicked on and its bindings
-    def open_selected_file(duplicate_files, file_listbox):
+    def open_selected_file(self):
         
-        directory = directory_listbox.get(directory_listbox.curselection()[1])
+        directory = self.directory_listbox.get(self.directory_listbox.curselection())
         print(directory)
-        file = file_listbox.get(file_listbox.curselection()[1])
+        file = self.current_file_listbox_key
         print(file)
         
         
@@ -184,8 +184,7 @@ class GUI():
         elif sys.platform == 'windows':
                 subprocess.check_call(['explorer', path])
             
-    directory_listbox.bind("<Button-2>", lambda x: open_selected_file(duplicate_files, file_listbox))
-    '''
+
     
     def show_progress_window(self):
         # Show Progrgress window
