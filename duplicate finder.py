@@ -84,22 +84,24 @@ def search(folder_to_search, ignore_items, topdown=True):
     progress_window.destroy()
        
     
-    root.minsize(750,400) #So the listboxes never get hidden
+    root.minsize(750,600) #So the listboxes never get hidden
     
        
     # Display output
     
     horizontal_separator = ttk.Separator(mainframe, orient=HORIZONTAL)           
-    horizontal_separator.grid(column=0, row=6, columnspan=4, sticky=(W, E,)) 
+    horizontal_separator.grid(column=0, row=6, columnspan=4, pady="30", sticky=(W, E,)) 
     
     
-    # Listboxes
+    # Listboxes!
 
     # File Listbox
+    ttk.Label(mainframe, text="Duplicate Files (click to see locations)").grid(column=0, row=7, padx="15", sticky=(W, S))
     file_listbox = Listbox(mainframe)
-    file_listbox.grid(column=0, row=7, sticky=(W, N, E, S), pady="30", padx=15)
+    file_listbox.grid(column=0, row=8, sticky=(W, N, E, S), padx=15)
     for file in duplicate_files.keys():
-        file_listbox.insert(END, file)
+        file_listbox.insert(END, file) # Populate listbox
+    file_listbox.selection_set(0)
 
     # File Listbox Y scrollbar
     file_listbox_scrollbar = ttk.Scrollbar(file_listbox, orient=VERTICAL, command=file_listbox.yview)
@@ -108,8 +110,9 @@ def search(folder_to_search, ignore_items, topdown=True):
     
     
     # Directory listbox
+    ttk.Label(mainframe, text="Locations Found (click to open)").grid(column=1, row=7, padx="15", sticky=(W, S))
     directory_listbox = Listbox(mainframe)
-    directory_listbox.grid(column=1, row=7, columnspan=3, sticky=(W, N, E, S), pady="30", padx=15)
+    directory_listbox.grid(column=1, row=8, columnspan=3, sticky=(W, N, E, S), padx=15)
     directory_listbox_scrollbar = ttk.Scrollbar(directory_listbox, orient=VERTICAL, command=directory_listbox.yview)
     
     # Directory listbox Y scrollbar
@@ -134,7 +137,7 @@ def search(folder_to_search, ignore_items, topdown=True):
             directory_listbox.insert(END, directory)
  
     file_listbox.bind("<<ListboxSelect>>", lambda x: update_directory_listbox(duplicate_files, file_listbox))
-    
+    update_directory_listbox(duplicate_files, file_listbox) # Call it once to get started
     
 
     # A function to open folders when clicked on and its bindings
@@ -151,8 +154,8 @@ def search(folder_to_search, ignore_items, topdown=True):
     
     directory_listbox.bind("<<ListboxSelect>>", lambda x: open_selected_path(duplicate_files, file_listbox))
 
-
 ###################################################################################
+
 # Windows and Frame    
 
     
@@ -184,7 +187,8 @@ mainframe.rowconfigure(3, weight=0)
 mainframe.rowconfigure(4, weight=0)
 mainframe.rowconfigure(5, weight=0)
 mainframe.rowconfigure(6, weight=0)
-mainframe.rowconfigure(7, weight=2)
+mainframe.rowconfigure(7, weight=0)
+mainframe.rowconfigure(8, weight=2)
 
 
 # UI Elements
