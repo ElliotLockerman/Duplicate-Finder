@@ -63,7 +63,7 @@ class DuplicateDictionary():
             for file in self.filenames:
                 if file in self.all_files: #If its a duplicate,
                     if file in self.duplicate_files: #And its already known to be a dupilcate
-                        self.duplicate_files[file].append(dirpath) # Add its path to duplicates list
+                        self.duplicate_files[file].append(self.dirpath) # Add its path to duplicates list
                     else: # And its not known to be a duplicate
                         self.duplicate_files[file] = [self.all_files[file],]# Add the original (in all_files), creating a list
                         self.duplicate_files[file].append(self.dirpath)# And add the current one
