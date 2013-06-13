@@ -39,7 +39,7 @@ class DuplicateDictionary():
         # Check if file exists. If not, show alert
         if not os.path.exists(self.folder_to_search_str):
             gui.destroy_progress_window()
-            gui.show_bad_path()
+            gui.show_alert("The path you specified does not exist. Please try again")
             return # Exit the function prematurely
         
         ignore_list = list(ignore_items.get().split(",")) # Get the ignore files, split by the commas, turn to list

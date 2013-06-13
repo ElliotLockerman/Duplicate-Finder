@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+'''A Python tkinter program to find duplicate files'''
 
 ###################################################################################
 # Imports
@@ -20,52 +21,51 @@ from duplicate_dictionary import *
 
 
 class GUI():
-    
+    ''' The GUI and main class '''
     # Function for Select Folder Button
-    def set_root_folder(self):
-        self.selected_folder.set(tkFileDialog.askdirectory())
+
     
     
     def __init__(self):
+        ''' Creates the root window, frame, and all widgets, some disabled ''' 
         self.root = Tk()
         
         self.root.title("Duplicate Finder")
         self.root.columnconfigure(0, weight=1)
         self.root.rowconfigure(0, weight=1)
-        self.root.geometry('+30+30')
-        self.root.minsize(750,600)
+        self.root.geometry('+50+50')
+        self.root.minsize(800,600)
         
         
         
         # Menu bar
         
         # Placeholders
-
         def copy():
             return
         def paste():
             return
         
-        
-        # Menus
+
+        # Menus- Just to block the defaults
         self.root.option_add('*tearOff', FALSE)
-        
         self.menubar = Menu(self.root)
         self.root['menu'] = self.menubar
 
-
+        
         self.menu_file = Menu(self.menubar)
         self.menubar.add_cascade(menu=self.menu_file, label='File')
-
-        self.menu_file.add_command(label='Open...', command=lambda: self.set_root_folder())
-        
+        self.menu_file.add_command(label='Select Folder...', command=lambda: self.set_root_folder(), accelerator="Meta-o")
+        self.menu_file.add_command(label='Close', command=lambda: self.quit(), accelerator="Meta-w")
+        self.root.bind('<Meta-o>', self.quit)
         
         self.menu_edit = Menu(self.menubar)
         self.menubar.add_cascade(menu=self.menu_edit, label='Edit')
         self.menu_edit.add_command(label='Copy', command=copy)
         self.menu_edit.add_command(label='Paste', command=paste)
         
-        
+
+        # Set platform-specific menus
         self.window_system = self.root.tk.call('tk', 'windowingsystem')    ; # will return x11, win32 or aqua
         print(self.window_system)
         if self.window_system == 'aqua':
@@ -82,16 +82,17 @@ class GUI():
         else:
             self.menu_help = Menu(self.menubar, name='help')
             self.menubar.add_cascade(menu=menu_help, label='Help')
+
         
         # Root-level frame
         self.mainframe = ttk.Frame(self.root, padding="30 30 30 30")
         self.mainframe.grid(column=0, row=0, sticky=(W, N, E, S))
         
         
-        self.mainframe.columnconfigure(0, weight=1)
+        self.mainframe.columnconfigure(0, weight=1, minsize="325")
         self.mainframe.columnconfigure(1, weight=2, minsize="100")
         self.mainframe.columnconfigure(2, weight=2, minsize="100")
-        self.mainframe.columnconfigure(3, weight=1)
+        self.mainframe.columnconfigure(3, weight=1, minsize="150")
         
         self.mainframe.rowconfigure(0, weight=0)
         self.mainframe.rowconfigure(1, weight=0)
@@ -137,21 +138,24 @@ class GUI():
         
         
         # Directory listbox
-        ttk.Label(self.mainframe, text="Locations Found (left click to select, double click to open folder, right click to open file)").grid(column=1, row=7, padx="15", sticky=(W, S), pady="5")
+        ttk.Label(self.mainframe, text="Locations Found (left click to select, double click to open folder, right click to open file)").grid(column=1, row=7, columnspan=3, padx="15", sticky=(W, S), pady="5")
         self.directory_listbox = Listbox(self.mainframe)
         self.directory_listbox.grid(column=1, row=8, columnspan=3, sticky=(W, N, E, S), padx=15)
         self.directory_listbox.configure(bg='#ccc') # Starts out greyed out
                     
+            
+            
+                    
         self.root.mainloop()
   
 
-     
+    def set_root_folder(self):
+        ''' Gets the folder to be searched '''
+        self.selected_folder.set(tkFileDialog.askdirectory())
        
-    # Not sure if I will need this.   
-    def get_root_folder(self):
-        return self.selected_folder.get()  
             
-    def ready(self): # Activates everything
+    def ready(self):
+        ''' Activates everything after the folder has been searched '''
         # Display output
         #Change colors to show enabled
         self.file_listbox.configure(bg='#ffffff')
@@ -186,11 +190,17 @@ class GUI():
         self.file_listbox.bind("<<ListboxSelect>>", lambda x: self.update_directory_listbox())
         self.directory_listbox.bind("<Double-1>", lambda x: self.open_selected_path())
         self.directory_listbox.bind("<Button-2>", lambda x: self.open_selected_file())
-
+        self.root.bind('<Control-Q>', self.quit())
+        self.root.bind('<Control-q>', self.quit())
     
-    # A function to populate the directory listbox when file listbox is clicked
+    
+    def quit(self):
+        ''' Quits the program'''
+        self.root.destroy()
+    
     def update_directory_listbox(self):
-        
+        ''' Populate the directory listbox when file listbox is clicked '''
+
         self.directory_listbox.delete(0, END) # Clear the box from previous selections
         
         self.current_file_listbox_key = self.file_listbox.get(self.file_listbox.curselection())                
@@ -201,8 +211,8 @@ class GUI():
  
     
 
-    # A function to open folders when clicked
     def open_selected_path(self):
+        ''' Opens selected folder '''
         
         path = self.directory_listbox.get(self.directory_listbox.curselection())
        
@@ -215,9 +225,9 @@ class GUI():
     
     
  
-    # A function to open files when double clicked on and its bindings
+
     def open_selected_file(self):
-        
+        ''' 'Opens selected file '''
         if not self.directory_listbox.curselection(): # Make sure one is selected.
             return
         
@@ -238,11 +248,11 @@ class GUI():
             elif sys.platform == 'windows':
                 subprocess.check_call(['explorer', path])
         except subprocess.CalledProcessError: # If the file cannot be opened. 
-            self.show_bad_file()
+            self.show_alert("This file cannot be opened.")
 
     
     def show_progress_window(self):
-        # Show Progrgress window
+        ''' Show Progress window '''
         self.progress_window = Toplevel()
         self.progress_window.title("Duplicate Finder")
         self.progress_window.resizable(FALSE,FALSE)
@@ -257,10 +267,12 @@ class GUI():
         self.progress_bar.start()
                 
     def destroy_progress_window(self):
+        ''' Destroys progress window '''
         self.progress_window.destroy()
 
         
-    def show_bad_path(self):        
+    def show_alert(self,alert_text):
+        ''' Shows an alert window. The argument is the text. There is also a button to hide the window, with the text "ok" '''        
         alert_window = Toplevel()
         alert_window.title("Duplicate Finder")
         alert_window.resizable(FALSE,FALSE)
@@ -268,20 +280,9 @@ class GUI():
         alertframe = ttk.Frame(alert_window, padding="10 10 10 10")
         alertframe.grid(column=0, row=0, sticky=(W, N, E, S))
         
-        ttk.Label(alertframe, text="The path you specified does not exist. Please try again").grid(column=0, row=1, padx="15", pady="15", sticky=E)
+        ttk.Label(alertframe, text=alert_text).grid(column=0, row=1, padx="15", pady="15", sticky=E)
         ttk.Button(alertframe, text="Ok", command=lambda: alert_window.destroy()).grid(column=0, row=2)
-        
-    
-    def show_bad_file(self):        
-        alert_window = Toplevel()
-        alert_window.title("Duplicate Finder")
-        alert_window.resizable(FALSE,FALSE)
-        
-        alertframe = ttk.Frame(alert_window, padding="10 10 10 10")
-        alertframe.grid(column=0, row=0, sticky=(W, N, E, S))
-        
-        ttk.Label(alertframe, text="This file cannot be opened.").grid(column=0, row=1, padx="15", pady="15", sticky=E)
-        ttk.Button(alertframe, text="Ok", command=lambda: alert_window.destroy()).grid(column=0, row=2)        
+       
         
 ###################################################################################
 # Create Instances
