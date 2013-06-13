@@ -21,6 +21,11 @@ from duplicate_dictionary import *
 
 class GUI():
     
+    # Function for Select Folder Button
+    def set_root_folder(self):
+        self.selected_folder.set(tkFileDialog.askdirectory())
+    
+    
     def __init__(self):
         self.root = Tk()
         
@@ -30,6 +35,53 @@ class GUI():
         self.root.geometry('+30+30')
         self.root.minsize(750,600)
         
+        
+        
+        # Menu bar
+        
+        # Placeholders
+
+        def copy():
+            return
+        def paste():
+            return
+        
+        
+        # Menus
+        self.root.option_add('*tearOff', FALSE)
+        
+        self.menubar = Menu(self.root)
+        self.root['menu'] = self.menubar
+
+
+        self.menu_file = Menu(self.menubar)
+        self.menubar.add_cascade(menu=self.menu_file, label='File')
+
+        self.menu_file.add_command(label='Open...', command=lambda: self.set_root_folder())
+        
+        
+        self.menu_edit = Menu(self.menubar)
+        self.menubar.add_cascade(menu=self.menu_edit, label='Edit')
+        self.menu_edit.add_command(label='Copy', command=copy)
+        self.menu_edit.add_command(label='Paste', command=paste)
+        
+        
+        self.window_system = self.root.tk.call('tk', 'windowingsystem')    ; # will return x11, win32 or aqua
+        print(self.window_system)
+        if self.window_system == 'aqua':
+            
+            apple = Menu(self.menubar, name='apple')
+            self.menubar.add_cascade(menu=apple)
+
+            help = Menu(self.menubar, name='help') 
+            self.menubar.add_cascade(menu=help)       
+        
+        elif self.window_system == 'win32':
+            sysmenu = Menu(self.menubar, name='system')
+            self.menubar.add_cascade(menu=sysmenu)
+        else:
+            self.menu_help = Menu(self.menubar, name='help')
+            self.menubar.add_cascade(menu=menu_help, label='Help')
         
         # Root-level frame
         self.mainframe = ttk.Frame(self.root, padding="30 30 30 30")
@@ -52,8 +104,9 @@ class GUI():
         self.mainframe.rowconfigure(8, weight=2)
         
         
+             
 
-        # Folder Duplicate
+        # Folder to search
         ttk.Label(self.mainframe, text="Folder to search (including subfolders): ").grid(column=0, row=1, padx="15", pady="15", sticky=E)
         self.selected_folder = StringVar()
         ttk.Entry(self.mainframe, textvariable=self.selected_folder).grid(column=1, row=1, columnspan=2, sticky=W+E)
@@ -92,9 +145,7 @@ class GUI():
         self.root.mainloop()
   
 
-     # Function for Select Folder Button
-    def set_root_folder(self):
-        self.selected_folder.set(tkFileDialog.askdirectory())
+     
        
     # Not sure if I will need this.   
     def get_root_folder(self):
@@ -179,13 +230,15 @@ class GUI():
         path = os.path.join(directory, file)
         print(path)
            
-        if sys.platform == 'darwin':
+        try: 
+            if sys.platform == 'darwin':
                 subprocess.check_call(['open', '--', path])
-        elif sys.platform == 'linux2':
+            elif sys.platform == 'linux2':
                 subprocess.check_call(['gnome-open', '--', path])
-        elif sys.platform == 'windows':
+            elif sys.platform == 'windows':
                 subprocess.check_call(['explorer', path])
-            
+        except subprocess.CalledProcessError: # If the file cannot be opened. 
+            self.show_bad_file()
 
     
     def show_progress_window(self):
@@ -202,9 +255,33 @@ class GUI():
         self.progress_bar = ttk.Progressbar(self.progress_frame, orient=HORIZONTAL, length=200, mode='indeterminate')
         self.progress_bar.grid(column=1, row=2, columnspan=3)
         self.progress_bar.start()
-        
+                
     def destroy_progress_window(self):
         self.progress_window.destroy()
+
+        
+    def show_bad_path(self):        
+        alert_window = Toplevel()
+        alert_window.title("Duplicate Finder")
+        alert_window.resizable(FALSE,FALSE)
+        
+        alertframe = ttk.Frame(alert_window, padding="10 10 10 10")
+        alertframe.grid(column=0, row=0, sticky=(W, N, E, S))
+        
+        ttk.Label(alertframe, text="The path you specified does not exist. Please try again").grid(column=0, row=1, padx="15", pady="15", sticky=E)
+        ttk.Button(alertframe, text="Ok", command=lambda: alert_window.destroy()).grid(column=0, row=2)
+        
+    
+    def show_bad_file(self):        
+        alert_window = Toplevel()
+        alert_window.title("Duplicate Finder")
+        alert_window.resizable(FALSE,FALSE)
+        
+        alertframe = ttk.Frame(alert_window, padding="10 10 10 10")
+        alertframe.grid(column=0, row=0, sticky=(W, N, E, S))
+        
+        ttk.Label(alertframe, text="This file cannot be opened.").grid(column=0, row=1, padx="15", pady="15", sticky=E)
+        ttk.Button(alertframe, text="Ok", command=lambda: alert_window.destroy()).grid(column=0, row=2)        
         
 ###################################################################################
 # Create Instances
