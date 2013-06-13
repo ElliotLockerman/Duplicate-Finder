@@ -52,7 +52,6 @@ class GUI():
         self.mainframe.rowconfigure(8, weight=2)
         
         
-        # UI Elements
 
         # Folder Duplicate
         ttk.Label(self.mainframe, text="Folder to search (including subfolders): ").grid(column=0, row=1, padx="15", pady="15", sticky=E)
@@ -167,6 +166,9 @@ class GUI():
  
     # A function to open files when double clicked on and its bindings
     def open_selected_file(self):
+        
+        if not self.directory_listbox.curselection(): # Make sure one is selected.
+            return
         
         directory = self.directory_listbox.get(self.directory_listbox.curselection())
         print(directory)
