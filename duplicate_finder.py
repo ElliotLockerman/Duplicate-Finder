@@ -143,9 +143,7 @@ class GUI():
         self.directory_listbox.grid(column=1, row=8, columnspan=3, sticky=(W, N, E, S), padx=15)
         self.directory_listbox.configure(bg='#ccc') # Starts out greyed out
                     
-            
-            
-                    
+              
         self.root.mainloop()
   
 
@@ -160,6 +158,7 @@ class GUI():
         #Change colors to show enabled
         self.file_listbox.configure(bg='#ffffff')
         self.directory_listbox.configure(bg='#ffffff')
+        
         
         # Scrollbars
         
@@ -190,8 +189,8 @@ class GUI():
         self.file_listbox.bind("<<ListboxSelect>>", lambda x: self.update_directory_listbox())
         self.directory_listbox.bind("<Double-1>", lambda x: self.open_selected_path())
         self.directory_listbox.bind("<Button-2>", lambda x: self.open_selected_file())
-        self.root.bind('<Control-Q>', self.quit())
-        self.root.bind('<Control-q>', self.quit())
+        self.root.bind('<Control-Q>', self.quit)
+        self.root.bind('<Control-q>', self.quit)
     
     
     def quit(self):

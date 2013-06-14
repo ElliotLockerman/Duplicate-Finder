@@ -21,15 +21,16 @@ import sys
 class DuplicateDictionary():
     
     def __init__(self):
-        self.all_files = {} # A dictionary of all files in folder_to_search, including subfiles.Key is filename, value is path. 
-        self.duplicate_files = {}# A dictionary of all duplicate in folder_to_search, including subfiles. Key is filename, value is string of paths where the file exists.
-        self.ignore_list = [] # A list of all filenames to ignore
         pass
     
     def get_duplicate_files(self): # A fuction so the gui ca
         return self.duplicate_files
     
     def create(self, folder_to_search, ignore_items, gui):
+        
+        self.all_files = {} # A dictionary of all files in folder_to_search, including subfiles.Key is filename, value is path. 
+        self.duplicate_files = {}# A dictionary of all duplicate in folder_to_search, including subfiles. Key is filename, value is string of paths where the file exists.
+        self.ignore_list = [] # A list of all filenames to ignore
         
         gui.show_progress_window()
         
