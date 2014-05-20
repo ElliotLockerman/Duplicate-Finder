@@ -55,9 +55,10 @@ class GUI():
         
         self.menu_file = Menu(self.menubar)
         self.menubar.add_cascade(menu=self.menu_file, label='File')
-        self.menu_file.add_command(label='Select Folder...', command=lambda: self.set_root_folder(), accelerator="Meta-o")
-        self.menu_file.add_command(label='Close', command=lambda: self.quit(), accelerator="Meta-w")
-        self.root.bind('<Meta-o>', self.quit)
+        self.menu_file.add_command(label='Select Folder...', command=lambda: self.set_root_folder(), accelerator="o")
+        self.root.bind_all('<o>',self.set_root_folder)
+        self.menu_file.add_command(label='Close', command=lambda: self.quit(), accelerator="w")
+        self.root.bind_all('<w>',self.quit)
         
         self.menu_edit = Menu(self.menubar)
         self.menubar.add_cascade(menu=self.menu_edit, label='Edit')
@@ -143,11 +144,13 @@ class GUI():
         self.directory_listbox.grid(column=1, row=8, columnspan=3, sticky=(W, N, E, S), padx=15)
         self.directory_listbox.configure(bg='#ccc') # Starts out greyed out
                     
+        
+        
               
         self.root.mainloop()
   
 
-    def set_root_folder(self):
+    def set_root_folder(self, *args):
         ''' Gets the folder to be searched '''
         self.selected_folder.set(tkFileDialog.askdirectory())
        
@@ -189,11 +192,11 @@ class GUI():
         self.file_listbox.bind("<<ListboxSelect>>", lambda x: self.update_directory_listbox())
         self.directory_listbox.bind("<Double-1>", lambda x: self.open_selected_path())
         self.directory_listbox.bind("<Button-2>", lambda x: self.open_selected_file())
-        self.root.bind('<Control-Q>', self.quit)
-        self.root.bind('<Control-q>', self.quit)
+        
+        
     
     
-    def quit(self):
+    def quit(self,*args):
         ''' Quits the program'''
         self.root.destroy()
     
