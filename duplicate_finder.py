@@ -55,10 +55,10 @@ class GUI():
         
         self.menu_file = Menu(self.menubar)
         self.menubar.add_cascade(menu=self.menu_file, label='File')
-        self.menu_file.add_command(label='Select Folder...', command=lambda: self.set_root_folder(), accelerator="o")
-        self.root.bind_all('<o>',self.set_root_folder)
-        self.menu_file.add_command(label='Close', command=lambda: self.quit(), accelerator="w")
-        self.root.bind_all('<w>',self.quit)
+        self.menu_file.add_command(label='Select Folder...', command=lambda: self.set_root_folder(), accelerator="Meta-o")
+        self.root.bind_all('<Meta-o>',self.set_root_folder)
+        self.menu_file.add_command(label='Close', command=lambda: self.quit(), accelerator="Meta-w")
+        self.root.bind_all('<Meta-w>',self.quit)
         
         self.menu_edit = Menu(self.menubar)
         self.menubar.add_cascade(menu=self.menu_edit, label='Edit')
